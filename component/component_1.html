@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <div>
+      <blog-post
+        title="My journey with Vue"
+      ></blog-post>
+    </div>
+  </div>
+</body>
+<script>
+  Vue.component('blog-post', {
+    props: ['title'],
+    template: `
+      <div class="blog-post">
+        <h3>{{ title }}</h3>
+      </div>
+    `
+  });
+
+  function Person(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+
+  Vue.component('my-component', {
+    props: {
+      propA: Number,
+      propB: [String, Number],
+      propC: {
+        type: String,
+        required: true
+      },
+      propD: {
+        type: Number,
+        default: 100
+      },
+      propE: {
+        type: Object,
+        default: function () {
+          return { message: 'hello' };
+        }
+      },
+      propF: {
+        validator: function (value) {
+          return ['success', 'warning', 'danger'].indexOf(value) !== -1;
+        }
+      },
+      author: Person
+    }
+  });
+
+  var ComponentA = {};
+
+  new Vue({
+    el: '#app'
+  });
+</script>
+</html>

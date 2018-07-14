@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <todo-list v-bind:todos="todos">
+      <template slot-scope="{ todo }">
+        <span v-if="todo.isComplete">✓</span>
+        {{ todo.text }}
+      </template>
+    </todo-list>
+  </div>
+</body>
+<script>
+
+  Vue.component('child', {
+    template: `
+      <div>
+        <div class="child">
+          <slot name="up"></slot>
+          <h3>这里是子组件</h3>
+          <slot name="down"></slot>
+          <slot></slot>
+        </div>
+      </div>
+    `
+  });
+
+
+
+  Vue.component('todo-list', {
+    props: ['todos'],
+    template: `
+      <ul>
+        <li
+          v-for="todo in todos"
+          v-bind:key="todo.id"
+        >
+          <slot v-bind:todo="todo">
+          </slot>
+        </li>
+      </ul>
+    `
+  });
+
+  Vue.component('navigation-link', {
+    props: ['url'],
+    template: `
+      <a
+        v-bind:href="url"
+        class="nav-link"
+      >
+        <slot></slot>
+      </a>
+    `
+  });
+  
+  Vue.component('base-layout', {
+    template: `
+      <button type="submit">
+        <slot>Submit</slot>
+      </button>
+    `
+  });
+
+
+  new Vue({
+    el: '#app',
+    data: {
+      user: {
+        name: 'xxxx'
+      },
+      todos: [{
+        id: 'xxx',
+        text: 'xxx',
+        isComplete: false
+      }, {
+        id: 'iii',
+        text: 'xxxxxxx',
+        isComplete: true
+      }]
+    }
+  });
+</script>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <input type="number" v-model.number="age">
+    <span>Picked: {{ age }}</span>
+
+    <input type="checkbox" v-model="toggle">
+    <span>Toggle: {{ toggle }}</span>
+
+    <select v-model="selected">
+      <option value="abc">ABC</option>
+    </select>
+    <span>Selected: {{ selected }}</span>
+  </div>
+</body>
+<script>
+  var app = new Vue({
+    el: '#app',
+    data: {
+      age: '',
+      toggle: '',
+      selected: ''
+    }
+  });
+</script>
+</html>

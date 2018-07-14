@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="app-2">
+    <span v-bind:title="message">
+      鼠标悬停几秒查看此处绑定信息～
+    </span>
+  </div>
+  <div id="app-3">
+    <p v-if="seen">
+      现在你看到我
+    </p>
+  </div>
+  <div id="app-4">
+    <ol>
+      <li v-for="todo in todos">
+        {{ todo.text }}
+      </li>
+    </ol>
+  </div>
+  <div id="app-5">
+    <p>{{ message }}</p>
+    <button v-on:click="reverseMessage">逆转消息</button>
+  </div>
+
+  <div id="app-6">
+    <p>{{ message }}</p>
+    <input v-model="message">
+  </div>
+
+  <div id="app-7">
+    <ol>
+      <todo-item
+        v-for="items in groceryList"
+        v-bind:todo="items"
+        v-bind:key="items.id">
+      </todo-item>
+    </ol>
+  </div>
+
+  <div id="app-8">
+    <p>Using mustaches: {{ rawhtml }}</p>
+    <p>Using v-html directive: <span v-html="rawhtml"></span></p>
+  </div>
+
+</body>
+<script>
+  var app = new Vue({
+    el: '#app-2',
+    data: {
+      message: '页面加载于' + new Date().toLocaleDateString()
+    }
+  });
+
+  var app3 = new Vue({
+    el: '#app-3',
+    data: {
+      seen: true
+    }
+  });
+
+  var app4 = new Vue({
+    el: '#app-4',
+    data: {
+      todos: [{
+        text: '学习 Javascript'
+      }, {
+        text: '学习 Vue'
+      }, {
+        text: '整个牛项目'
+      }]
+    }
+  });
+
+  var app5 = new Vue({
+    el: '#app-5',
+    data: {
+      message: 'Hello Vue.js'
+    },
+    methods: {
+      reverseMessage: function() {
+        this.message = this.message.split('').reverse().join('')
+      }
+    }
+  });
+
+  var app6 = new Vue({
+    el: '#app-6',
+    data: {
+      message: 'Hello World!'
+    }
+  });
+
+  Vue.component('todo-item', {
+    props: ['todo'],
+    template: '<li>{{ todo.text }}</li>'
+  });
+  var app7 = new Vue({
+    el: '#app-7',
+    data: {
+      groceryList: [{
+        id: 0, text: '蔬菜'
+      }, {
+        id: 1, text: '奶酪'
+      }, {
+        id: 2, text: '随便'
+      }]
+    }
+  });
+
+  var app8 = new Vue({
+    el: '#app-8',
+    data: {
+      rawhtml: '<span style="color: red">This is should be red</span>'
+    }
+  });
+</script>
+</html>

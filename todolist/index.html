@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <title>Document</title>
+  <link href="./style/index.css" rel="stylesheet" type="text/css">
+  <script src="./component.js"></script>
+</head>
+<body>
+  <div class="title">Todo List</div>
+  <div class="content" id="todo-left">
+    <div class="todo-left">
+      <todo-left
+        v-bind:todos="todos"
+        v-bind:all="all"
+        v-bind:types="types"
+        v-bind:open="isOpenSub"
+        v-bind:onopen="() => isOpenSub = true"
+        v-bind:onaction="(typeKey, subTypeKey) => onAction(typeKey, subTypeKey)"
+        v-bind:addsub="(value, type) => addSubType(value, type)"
+        class="left-all"
+      ></todo-left>
+      <div
+        class="add"
+        @click="isAdd = true">
+        <span>+</span>添加分类
+      </div>
+      <pop
+        v-bind:open="isAdd"
+        v-bind:types="types"
+        v-bind:addtype="(value) => addType(value)"
+      />
+    </div>
+    <div class="todo-center-big">
+      <todo-center
+        v-bind:alltodos="selectedTodos"
+        v-bind:onselectedtodo="(todo) => onSelectTodo(todo)"
+      ></todo-center>
+      <div
+        class="add-task"
+        @click="onClickAddTask">
+        <span>+</span>添加任务
+      </div>
+      <pop-task
+        v-bind:isaddtask="isAddTask"
+        v-bind:addtask="(value) => addTask(value)"
+      />
+    </div>
+    <div class="todo-right">
+      <todo-right
+        v-bind:todo="selectedTodo"
+      >
+      </todo-right>
+    </div>
+  </div>
+</body>
+<script>
+  var todos = [{
+    id: '0',
+    type: 'baidu',
+    subType: 'task1',
+    isCompleted: false,
+    title: 'to-do 1',
+    content: '完成task1的编码',
+    date: new Date()
+  }, {
+    id: '1',
+    type: 'baidu',
+    subType: 'task1',
+    isCompleted: true,
+    title: 'to-do 2',
+    content: '完成task2的编码',
+    date: new Date()
+  }, {
+    id: '2',
+    type: 'design',
+    subType: 'task3',
+    isCompleted: false,
+    title: 'to-do 3',
+    content: '完成task3的编码',
+    date: new Date()
+  }];
+  var types = [{
+    name: '百度IFE项目',
+    key: 'baidu',
+    subType: [{
+      name: 'task1',
+      key: 'task1',
+      num: 0,
+      }, {
+      name: 'task2',
+      key: 'task2',
+      num: 0
+      }]
+  }, {
+    name: '毕业设计',
+    key: 'design',
+    subType: [{
+      name: 'task3',
+      key: 'task3',
+      num: 0,
+      }, {
+      name: 'task4',
+      key: 'task4',
+      num: 0
+      }]
+  }];
+  var left = new Vue({
+    el: '#todo-left',
+    data: {
+      todos: todos, //所有任务列表
+      types: types, //所有类型
+      isAdd: false, //是否打开添加分类的pop
+      isOpenSub: false, //是否打开添加子分类的pop
+      isAddTask: false, //是否打开添加任务的pop
+      selectedTodos: [], //选中的分类下的所有任务列表
+      selectedTodo: {}, //选中的todo
+      typeKey: '', //选中的分类key
+      subTypeKey: '' //选中的子分类key
+    },
+    methods: {
+      addType: function(value, type) {
+        if (value) {
+          this.types.push({
+            name: value,
+            key: this.types.length + 1,
+            subType: []
+          });
+        }
+        this.isAdd = false;
+      },
+      addSubType: function(value, type) {
+        if (value) {
+          this.types.some(t => {
+            if (t.key === type.key) {
+              t.subType.push({
+                name: value,
+                key: t.subType.length + 1,
+                num: 0,
+              });
+              return true;
+            }
+            return false;
+          });
+        }
+        this.isOpenSub = false;
+      },
+      onAction: function(typeKey, subTypeKey) {
+        this.typeKey = typeKey;
+        this.subTypeKey = subTypeKey;
+        this.selectedTodos = this.todos.filter(todo => todo.type === typeKey && todo.subType === subTypeKey);
+      },
+      onSelectTodo: function(todo) {
+        this.selectedTodo = todo;
+      },
+      addTask: function(todo) {
+        const newTodo = Object.assign({}, todo, {
+          id: this.types.length + 1,
+          type: this.typeKey,
+          subType: this.subTypeKey,
+          isCompleted: false
+        });
+        this.todos.push(newTodo);
+
+        this.selectedTodos.push(newTodo);
+
+        this.isAddTask = false;
+      },
+      onClickAddTask: function() {
+        if (!!this.subTypeKey) this.isAddTask = true
+      }
+    },
+    computed: {
+      all: function() {
+        var all = {};
+        this.types.forEach(type => {
+          type.subType.forEach(sub => sub.num = 0);
+        });
+        this.todos.forEach(todo => {
+          if (!all[todo.type]) all[todo.type] = {};
+          if (!all[todo.type][todo.subType]) all[todo.type][todo.subType] = [];
+
+          // 将所有的todos分类
+          all[todo.type][todo.subType].push(todo);
+
+          //统计每个分类下的todo数量
+          this.types.forEach(type => {
+            if (type.key === todo.type) {
+              type.subType.forEach((subType) => {
+                if (subType.key === todo.subType) subType.num += 1;
+              });
+            }
+          });
+        });
+
+        return all;
+      }
+    }
+  });
+</script>
+</html>

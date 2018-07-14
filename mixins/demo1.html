@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+<script>
+  var myMixin = {
+    created: function() {
+      this.hello();
+    },
+    methods: {
+      hello: function () {
+        console.log('hello from mixin!');
+      }
+    }
+  }
+
+  Vue.mixin({
+    created: function () {
+      console.log(this.$options);
+      var myOption = this.$options.myOption;
+      if (myOption) {
+        console.log(myOption)
+      }
+    }
+  });
+
+  var mixin = {
+    data: function() {
+      return {
+        message: 'hello',
+        foo: 'abc'
+      }
+    },
+    created: function () {
+      console.log('mixins');
+    }
+  }
+
+  var mixi = new Vue({
+    myOption: 'hello',
+    name: 'mixin'
+  });
+
+  mixi.mm = 'kk'
+
+  console.log(mixi)
+</script>
+</html>
